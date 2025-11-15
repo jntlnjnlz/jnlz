@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A short message from Jo</title> 
+
+<style>
+/* —————— Page —————— */
+body {
+  margin: 0;
+  height: 100vh;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  font-family: "Poppins", sans-serif;
+  position: relative;
+}
+
+/* MOBILE SCALING */
+@media (max-width: 480px) {
+  .envelope {
+    transform: scale(0.8);
+  }
+  .letter {
+    width: 85vw;
+    font-size: 1em;
+    padding: 25px;
+  }
+  .signature {
+    font-size: 1.1em;
+  }
+}
+
+/* —————— Sparkles —————— */
+.sparkle {
+  position: absolute;
+  color: #ffffffaa;
+  font-size: 12px;
+  animation: sparkleFloat 3s linear infinite;
+}
+@keyframes sparkleFloat {
+  from { opacity: 0; transform: translateY(20px) scale(0.7); }
+  50% { opacity: 1; }
+  to { opacity: 0; transform: translateY(-40px) scale(1.2); }
+}
+
+/* —————— Smoke —————— */
+.smoke {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, #ffffff18, transparent 60%);
+  filter: blur(18px);
+  animation: smokeMove 9s ease-in-out infinite;
+}
+@keyframes smokeMove {
+  0% { transform: translate(0,0) scale(1); opacity: 0.3; }
+  50% { transform: translate(40px,-40px) scale(1.2); opacity: 0.5; }
+  100% { transform: translate(-20px,-20px) scale(1); opacity: 0.3; }
+}
+
+/* —————— Envelope —————— */
+.envelope {
+  width: 250px;
+  height: 180px;
+  background: #111;
+  border: 2px solid #333;
+  position: absolute;
+  border-radius: 6px;
+  overflow: hidden;
+  animation: dropEnvelope 1s ease forwards;
+  cursor: pointer;
+}
+@keyframes dropEnvelope {
+  from { transform: translateY(-200px) scale(0.7); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.envelope::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #222, #111);
+  clip-path: polygon(0 0, 100% 0, 50% 55%);
+}
+
+@keyframes openEnvelope {
+  to { opacity: 0; transform: translateY(-40px) scale(0.8); }
+}
+
+/* —————— Letter —————— */
+.letter {
+  display: none;
+  width: 340px;
+  padding: 35px;
+  background: #1a1a1a;
+  color: #f1f1f1;
+  border-radius: 8px;
+  position: relative;
+  font-size: 1.1em;
+  line-height: 1.7;
+  font-family: "Comic Sans MS", cursive;
+  animation: fadeIn 0.8s ease forwards;
+
+  clip-path: polygon(
+    0 10%, 6% 0, 94% 0, 100% 12%,
+    100% 88%, 94% 100%, 6% 100%, 0 90%
+  );
+
+  box-shadow:
+    0 0 0 6px #111,
+    0 0 0 10px #4444,
+    inset 0 0 25px rgba(255,255,255,0.06),
+    0 0 35px rgba(255,255,255,0.1);
+}
+
+.signature {
+  margin-top: 18px;
+  font-size: 1.3em;
+  font-family: "Comic Sans MS", cursive;
+  opacity: 0;
+  animation: sign 1.8s ease forwards;
+}
+@keyframes sign {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.paperclip {
+  position: absolute;
+  top: -12px;
+  left: 22px;
+  font-size: 32px;
+  transform: rotate(-18deg);
+  opacity: 0.8;
+}
+
+/* Hearts */
+.heart {
+  position: absolute;
+  font-size: 28px;
+  opacity: 0.8;
+  animation: floatUp 7s linear infinite;
+}
+@keyframes floatUp {
+  from { transform: translateY(15vh) scale(0.9); opacity: 0; }
+  50% { opacity: 1; }
+  to { transform: translateY(-130vh) scale(1.3); opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- Sound Effect -->
+<audio id="openSound" src="open.mp3"></audio>
+
+<div class="smoke"></div>
+
+<div class="envelope" id="envelope"></div>
+
+<div class="letter" id="letter">
+  <div class="paperclip">📎</div>
+
+  Hi love, have a nice day ahead.<br>
+  Di pa gaoy later magpractice huh.<br>
+  Love you always mwuaaa 😘
+
+  <div class="signature">— love, Jona 🖋</div>
+</div>
+
+<script>
+/* Envelope click → open + show letter + sound */
+document.getElementById("envelope").addEventListener("click", () => {
+  const envelope = document.getElementById("envelope");
+  const letter = document.getElementById("letter");
+  const snd = document.getElementById("openSound");
+
+  snd.currentTime = 0;
+  snd.play(); // play sound
+
+  envelope.style.animation = "openEnvelope 0.8s forwards";
+
+  setTimeout(() => {
+    letter.style.display = "block";
+  }, 600);
+});
+
+/* Hearts */
+const hearts = ["🖤", "⚫", "✨"];
+function spawnHeart() {
+  const h = document.createElement("div");
+  h.className = "heart";
+  h.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+  h.style.left = Math.random() * 100 + "vw";
+  h.style.animationDuration = 5 + Math.random() * 4 + "s";
+  document.body.appendChild(h);
+  setTimeout(() => h.remove(), 8000);
+}
+setInterval(spawnHeart, 500);
+
+/* Sparkles */
+function sparkle() {
+  const s = document.createElement("div");
+  s.className = "sparkle";
+  s.textContent = "✦";
+  s.style.left = Math.random() * 100 + "vw";
+  s.style.top = Math.random() * 100 + "vh";
+  s.style.animationDuration = 2 + Math.random() * 2 + "s";
+  document.body.appendChild(s);
+  setTimeout(() => s.remove(), 3000);
+}
+setInterval(sparkle, 450);
+</script>
+
+</body>
+</html>
